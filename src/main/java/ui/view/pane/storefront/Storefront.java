@@ -1,17 +1,18 @@
 package ui.view.pane.storefront;
 
 import bcheck.BCheck;
+import bcheck.BCheck.Tags;
 import settings.defaultsavelocation.DefaultSaveLocationSettingsReader;
+import settings.tags.TagColors;
 import ui.controller.StoreController;
 import ui.model.table.BCheckTableModel;
 import ui.view.component.filechooser.ChooseMode;
 import ui.view.component.filechooser.FileChooser;
 import ui.view.listener.SingleHandlerDocumentListener;
+import ui.view.utils.TagRenderer;
 
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.*;
 import java.awt.*;
 import java.nio.file.Path;
 import java.util.List;
@@ -39,7 +40,7 @@ public class Storefront extends JPanel {
     private final JPanel tablePanel = new JPanel();
     private final JTextArea codePreview = new JTextArea();
     private final JTable bCheckTable = new JTable();
-    private final JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT);;
+    private final JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT);
     private final BCheckTableModel tableModel = new BCheckTableModel();
     private final SearchBar searchBar = new SearchBar();
 
@@ -64,18 +65,14 @@ public class Storefront extends JPanel {
 
     private void setupButtons() {
         copyButton.addActionListener(e -> {
-            int selectedRow = bCheckTable.getSelectedRow();
-            int selectedModelRow = bCheckTable.convertRowIndexToModel(selectedRow);
-            BCheck selectedBCheck = tableModel.getBCheckAtRow(selectedModelRow);
+            BCheck selectedBCheck = getSelectedBCheck();
 
             storeController.copyBCheck(selectedBCheck);
             statusLabel.setText("Copied BCheck " + selectedBCheck.name() + " to clipboard");
         });
 
         saveButton.addActionListener(e -> {
-            int selectedRow = bCheckTable.getSelectedRow();
-            int selectedModelRow = bCheckTable.convertRowIndexToModel(selectedRow);
-            BCheck selectedBCheck = tableModel.getBCheckAtRow(selectedModelRow);
+            BCheck selectedBCheck = getSelectedBCheck();
 
             Optional<Path> potentialSaveLocation = getSaveLocation(FILES_ONLY, selectedBCheck.filename());
             potentialSaveLocation.ifPresent(path -> {
@@ -115,29 +112,77 @@ public class Storefront extends JPanel {
     private void setupTablePanel() {
         tableModel.setBChecks(storeController.availableBChecks());
 
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.addPopupMenuListener(new PopupMenuListener()
+        {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    int rowAtPoint = bCheckTable.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), bCheckTable));
+                    if (rowAtPoint > -1) {
+                        bCheckTable.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                    }
+                });
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
+        });
+
+        JMenuItem copyBCheckMenuItem = new JMenuItem("Copy BCheck");
+        copyBCheckMenuItem.addActionListener(l -> {
+            BCheck selectedBCheck = getSelectedBCheck();
+
+            storeController.copyBCheck(selectedBCheck);
+        });
+
+        JMenuItem saveBCheckMenuItem = new JMenuItem("Save BCheck");
+        saveBCheckMenuItem.addActionListener(l -> {
+            BCheck selectedBCheck = getSelectedBCheck();
+
+            Optional<Path> potentialSaveLocation = getSaveLocation(FILES_ONLY, selectedBCheck.filename());
+            potentialSaveLocation.ifPresent(path -> {
+                if (path.toFile().isDirectory()) {
+                    path = path.resolve(selectedBCheck.filename());
+                }
+
+                storeController.saveBCheck(selectedBCheck, path);
+            });
+        });
+
+        popupMenu.add(copyBCheckMenuItem);
+        popupMenu.add(saveBCheckMenuItem);
+        bCheckTable.setComponentPopupMenu(popupMenu);
+
         bCheckTable.setModel(tableModel);
         bCheckTable.setAutoCreateRowSorter(true);
         bCheckTable.setSelectionMode(SINGLE_SELECTION);
         bCheckTable.getTableHeader().setReorderingAllowed(false);
         bCheckTable.getSelectionModel().addListSelectionListener(e -> handleTableRowChange(e, tableModel));
         bCheckTable.addRowSelectionInterval(0, 0);
+        bCheckTable.setDefaultRenderer(Tags.class, new TagRenderer(new TagColors()));
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new GridBagLayout());
 
-        SearchBar searchBar = setupSearchBar();
+        searchBar.getDocument().addDocumentListener(new SingleHandlerDocumentListener(e1 -> updateTable()));
 
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> {
             refreshButton.setEnabled(false);
             refreshButton.setText("Refreshing...");
 
-            List<BCheck> refreshedBChecks = storeController.refresh();
+            storeController.refresh();
 
             refreshButton.setText("Refresh");
             refreshButton.setEnabled(true);
 
-            tableModel.setBChecks(refreshedBChecks);
+            updateTable();
 
             statusLabel.setText("Refreshed");
         });
@@ -194,9 +239,7 @@ public class Storefront extends JPanel {
         addAncestorListener(new AncestorListener() {
             @Override
             public void ancestorAdded(AncestorEvent event) {
-                invokeLater(() -> {
-                    event.getComponent().requestFocusInWindow();
-                });
+                invokeLater(() -> event.getComponent().requestFocusInWindow());
             }
 
             @Override
@@ -209,27 +252,34 @@ public class Storefront extends JPanel {
         });
     }
 
-    private SearchBar setupSearchBar() {
-        searchBar.getDocument().addDocumentListener(new SingleHandlerDocumentListener(e -> {
-            if (searchBar.hasSearchText()) {
-                List<BCheck> matchingBChecks = storeController.findMatchingBChecks(searchBar.getText());
-                tableModel.setBChecks(matchingBChecks);
-            } else {
-                List<BCheck> allBChecks = storeController.availableBChecks();
-                tableModel.setBChecks(allBChecks);
-            }
-        }));
+    private void updateTable() {
+        List<BCheck> bChecks = searchBar.hasSearchText()
+                ? storeController.findMatchingBChecks(searchBar.getText())
+                : storeController.availableBChecks();
 
-        return searchBar;
+        tableModel.setBChecks(bChecks);
+    }
+
+    private BCheck getSelectedBCheck() {
+        int selectedRow = bCheckTable.getSelectedRow();
+        int selectedModelRow = bCheckTable.convertRowIndexToModel(selectedRow);
+
+        return tableModel.getBCheckAtRow(selectedModelRow);
     }
 
     private void handleTableRowChange(ListSelectionEvent selectionEvent, BCheckTableModel tableModel) {
-        if (!selectionEvent.getValueIsAdjusting()) {
-            BCheck selectedBCheck = tableModel.getBCheckAtRow(bCheckTable.convertRowIndexToModel(bCheckTable.getSelectedRow()));
-
-            codePreview.setText(selectedBCheck.script());
-            codePreview.setCaretPosition(0);
+        if (selectionEvent.getValueIsAdjusting()) {
+            return;
         }
+
+        int selectedRow = bCheckTable.getSelectedRow();
+
+        String previewText = selectedRow >= 0
+                ? tableModel.getBCheckAtRow(bCheckTable.convertRowIndexToModel(selectedRow)).script()
+                : "";
+
+        codePreview.setText(previewText);
+        codePreview.setCaretPosition(0);
     }
 
     private Optional<Path> getSaveLocation(ChooseMode chooseMode) {
