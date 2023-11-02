@@ -17,10 +17,13 @@ import java.awt.*;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 import static java.awt.BorderLayout.*;
 import static java.awt.FlowLayout.LEADING;
 import static java.awt.GridBagConstraints.NONE;
+import static java.util.concurrent.Executors.newFixedThreadPool;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -43,12 +46,15 @@ public class Storefront extends JPanel {
     private final JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT);
     private final BCheckTableModel tableModel = new BCheckTableModel();
     private final SearchBar searchBar = new SearchBar();
+    private final JButton refreshButton = new JButton("Refresh");
+    private final ExecutorService refreshExecutorService = newFixedThreadPool(1);
 
     public Storefront(StoreController storeController, DefaultSaveLocationSettingsReader saveLocationSettingsReader) {
         this.storeController = storeController;
         this.saveLocationSettingsReader = saveLocationSettingsReader;
 
         initialiseUi();
+        refreshBChecks();
     }
 
     private void initialiseUi() {
@@ -107,6 +113,7 @@ public class Storefront extends JPanel {
         splitPane.add(tablePanel);
         splitPane.add(previewScrollPane);
         splitPane.setResizeWeight(0.6);
+        splitPane.setBorder(createEmptyBorder(0, 10, 0, 5));
     }
 
     private void setupTablePanel() {
@@ -170,13 +177,40 @@ public class Storefront extends JPanel {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new GridBagLayout());
 
-        searchBar.getDocument().addDocumentListener(new SingleHandlerDocumentListener(e1 -> updateTable()));
+        searchBar.getDocument().addDocumentListener(new SingleHandlerDocumentListener(e -> updateTable()));
 
-        JButton refreshButton = new JButton("Refresh");
-        refreshButton.addActionListener(e -> {
-            refreshButton.setEnabled(false);
-            refreshButton.setText("Refreshing...");
+        refreshButton.addActionListener(e -> refreshBChecks());
 
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.weightx = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(10, 0, 0, 12);
+
+        topPanel.add(searchBar, constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0;
+        constraints.fill = NONE;
+        constraints.insets = new Insets(10, 0, 0, 0);
+
+        topPanel.add(refreshButton, constraints);
+
+        BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setVgap(10);
+
+        tablePanel.setLayout(borderLayout);
+
+        tablePanel.add(topPanel, NORTH);
+        tablePanel.add(new JScrollPane(bCheckTable), CENTER);
+        tablePanel.setBorder(createEmptyBorder(0, 0, 5, 5));
+    }
+
+    private void refreshBChecks() {
+        refreshButton.setEnabled(false);
+        refreshButton.setText("Refreshing...");
+
+        refreshExecutorService.submit(() -> {
             storeController.refresh();
 
             refreshButton.setText("Refresh");
@@ -186,27 +220,6 @@ public class Storefront extends JPanel {
 
             statusLabel.setText("Refreshed");
         });
-
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-
-        topPanel.add(searchBar, constraints);
-
-        constraints.gridx = 1;
-        constraints.weightx = 0;
-        constraints.fill = NONE;
-
-        topPanel.add(refreshButton, constraints);
-
-        BorderLayout borderLayout = new BorderLayout();
-        borderLayout.setVgap(15);
-
-        tablePanel.setLayout(borderLayout);
-
-        tablePanel.add(topPanel, NORTH);
-        tablePanel.add(new JScrollPane(bCheckTable), CENTER);
     }
 
     private void setupPreviewPanel() {
@@ -290,5 +303,9 @@ public class Storefront extends JPanel {
         return saveLocationSettingsReader
                 .defaultSaveLocation()
                 .or(() -> new FileChooser(chooseMode).prompt(defaultFileName));
+    }
+
+    public void close() {
+        refreshExecutorService.shutdown();
     }
 }
