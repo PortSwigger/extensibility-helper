@@ -1,15 +1,10 @@
-import bcheck.BCheckFactory;
 import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.persistence.Persistence;
-import client.GitHubClient;
-import fetcher.BCheckFetcher;
-import file.finder.BCheckFileFinder;
 import file.system.FileSystem;
-import file.temp.TempFileCreator;
-import file.zip.ZipExtractor;
 import logging.Logger;
-import network.RequestSender;
+import repository.Repository;
+import repository.RepositoryFacadeFactory;
 import settings.controller.SettingsController;
 import ui.clipboard.ClipboardManager;
 import ui.controller.StoreController;
@@ -24,22 +19,17 @@ import utils.CloseablePooledExecutor;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+@SuppressWarnings("unused")
 public class Extension implements BurpExtension {
     private static final String TAB_TITLE = "BCheck Helper";
 
     @Override
     public void initialize(MontoyaApi api) {
         Persistence persistence = api.persistence();
-        SettingsController settingsController = new SettingsController(persistence);
-
+        SettingsController settingsController = new SettingsController(persistence.preferences());
         Logger logger = new Logger(api.logging(), settingsController.debugSettings());
-        RequestSender requestSender = new RequestSender(api.http(), logger);
-        BCheckFactory bCheckFactory = new BCheckFactory(logger);
-        GitHubClient gitHubClient = new GitHubClient(requestSender);
-        TempFileCreator tempFileCreator = new TempFileCreator(logger);
-        ZipExtractor zipExtractor = new ZipExtractor(logger);
-        BCheckFileFinder bCheckFileFinder = new BCheckFileFinder();
-        BCheckFetcher onlineBCheckFetcher = new BCheckFetcher(bCheckFactory, gitHubClient, tempFileCreator, zipExtractor, bCheckFileFinder, settingsController.gitHubSettings());
+
+        Repository repository = RepositoryFacadeFactory.from(logger, api.http(), settingsController);
         CloseablePooledExecutor executor = new CloseablePooledExecutor();
 
         IconFactory iconFactory = new IconFactory(api.userInterface());
@@ -50,7 +40,7 @@ public class Extension implements BurpExtension {
         StorefrontModel lateInitializationStorefrontModel = new LateInitializationStorefrontModel(modelReference::get);
         StoreController storeController = new StoreController(
                 lateInitializationStorefrontModel,
-                onlineBCheckFetcher,
+                repository,
                 clipboardManager,
                 fileSystem
         );
@@ -66,7 +56,8 @@ public class Extension implements BurpExtension {
                 settingsController.defaultSaveLocationSettings(),
                 executor,
                 iconFactory,
-                logger
+                logger,
+                () -> api.userInterface().currentDisplayFont()
         );
 
         BCheckStore bcheckStore = new BCheckStore(settings, storefront);

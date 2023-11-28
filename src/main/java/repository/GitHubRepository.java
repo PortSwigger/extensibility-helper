@@ -1,4 +1,4 @@
-package fetcher;
+package repository;
 
 import bcheck.BCheck;
 import bcheck.BCheckFactory;
@@ -6,12 +6,12 @@ import client.GitHubClient;
 import file.finder.BCheckFileFinder;
 import file.temp.TempFileCreator;
 import file.zip.ZipExtractor;
-import settings.github.GitHubSettingsReader;
+import settings.repository.github.GitHubSettingsReader;
 
 import java.nio.file.Path;
 import java.util.List;
 
-public class BCheckFetcher {
+public class GitHubRepository implements Repository {
     private final GitHubClient gitHubClient;
     private final TempFileCreator tempFileCreator;
     private final ZipExtractor zipExtractor;
@@ -19,7 +19,7 @@ public class BCheckFetcher {
     private final GitHubSettingsReader gitHubSettings;
     private final BCheckFactory bCheckFactory;
 
-    public BCheckFetcher(
+    public GitHubRepository(
             BCheckFactory bCheckFactory,
             GitHubClient gitHubClient,
             TempFileCreator tempFileCreator,
@@ -35,9 +35,14 @@ public class BCheckFetcher {
         this.gitHubSettings = gitHubSettings;
     }
 
-    public List<BCheck> fetchAllBChecks() {
+    @Override
+    public List<BCheck> loadAllBChecks() {
         Path bCheckDownloadLocation = tempFileCreator.createTempDirectory("bcheck-store");
-        byte[] bChecksAsZip = gitHubClient.downloadRepoAsZip(gitHubSettings.repo(), gitHubSettings.apiKey());
+        byte[] bChecksAsZip = gitHubClient.downloadRepoAsZip(
+                gitHubSettings.repositoryUrl(),
+                gitHubSettings.repositoryName(),
+                gitHubSettings.apiKey()
+        );
 
         zipExtractor.extractZip(bChecksAsZip, bCheckDownloadLocation);
 

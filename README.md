@@ -1,5 +1,5 @@
 # BCheck Helper
-*BCheck Helper* makes finding and importing BChecks scripts into Burp easier by loading them from a remote GitHub repository.
+*BCheck Helper* makes finding and importing BChecks scripts into Burp easier by loading them from either a remote GitHub or local Git repository.
 
 Relevant BChecks can be found by searching for keywords or tags within the scripts.
 These can then be exported to the filesystem or copied to the clipboard to facilitate their import and subsequent
@@ -25,7 +25,7 @@ Alternatively, *BCheck Helper* can be built from source.
 * This can be loaded into Burp by navigating to the 'Extensions' tab, 'Installed' sub-tab, clicking the 'Add' button and loading the JAR file
 
 ## Requirements
-BCheck Helper currently requires Burp Suite v2023.10 or newer. As BChecks are used by Burp's Scanner, BCheck Helper
+*BCheck Helper* currently requires Burp Suite v2023.10 or newer. As BChecks are used by Burp's Scanner, *BCheck Helper*
 is only available for Burp Suite Professional edition.
 
 ## Finding BChecks
@@ -40,7 +40,7 @@ The table can be quickly filtered using the search bar to find the most relevant
 
 <img src="img/search.png" width="800"/>
 
-The filter performs a case-insensitive match on BChecks containing the search term with any of the following fields:
+The filter performs a case-insensitive match on BChecks containing the search term within any of the following fields:
 
 * Name
 * Author
@@ -105,18 +105,29 @@ These settings are persistent between Burp sessions.
 By default, you are prompted for a location when saving BChecks. Alternatively, a default location can be set by
 enabling the checkbox within the 'Default save location for BChecks' panel and clicking the 'Choose directory' button.
 
+### Configuring the BCheck repository
+By default, BChecks will be loaded from 
+PortSwigger's [curated GitHub repository](https://github.com/portswigger/bchecks), where Burp users can share their
+BChecks. 
 
-### Configuring a different GitHub repository
-By default, *BCheck Helper* will retrieve BChecks from PortSwigger's [curated repository](https://github.com/portswigger/bchecks),
-where Burp users can share their BChecks.
+In general, BChecks can either be loaded from either a GitHub server or a local Git repository. 
+You can choose between these options by toggling the 'Repository type' option between 'GitHub' and 'Filesystem' under the
+'Repository configuration' section of the settings tab, and then change the respective settings that appear. 
+
+#### Configuring a different GitHub repository
+Change the 'Repository type' option to 'GitHub'.
+
 The 'Repo name' setting within the 'GitHub configuration' panel can be used to point to a different repository.
-Note that this still has to be hosted on [GitHub](https://github.com/). If this restriction is too onerous,
-please open an issue to make this configurable.
+By default, this should be hosted on [GitHub](https://github.com/), but the 'Repo URL' setting can be used to fetch BChecks from
+alternative GitHub servers.
 
 If the repository is private, then you will need to provide an API key within the 'API key' field.
 
 Once the repository name has been changed, clicking the 'Refresh' button on the table panel will update the BChecks using the new configuration.
 
+#### Configuring a local repository
+Change the 'Repository type' option to 'Filesystem', and then set the 'Repository root directory' setting to the location
+of your local Git repository.
 
 ### Logging
 Enable the checkbox within the 'Logging' panel to obtain additional logging. Mostly, this relates to the

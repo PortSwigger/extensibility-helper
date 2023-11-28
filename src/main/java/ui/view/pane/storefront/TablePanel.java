@@ -7,15 +7,16 @@ import ui.controller.TablePanelController;
 import ui.icons.IconFactory;
 import ui.model.StorefrontModel;
 import ui.model.table.BCheckTableModel;
+import ui.view.listener.InertPopupMenuListener;
 import ui.view.utils.TagRenderer;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -34,18 +35,21 @@ class TablePanel extends JPanel {
     private final JComponent searchBar;
     private final StorefrontModel model;
     private final ActionController actionController;
+    private final Supplier<Font> fontSupplier;
 
     TablePanel(TablePanelController panelController,
                StorefrontModel storefrontModel,
                Executor executor,
                IconFactory iconFactory,
-               ActionController actionController) {
+               ActionController actionController,
+               Supplier<Font> fontSupplier) {
         super(new BorderLayout());
 
         this.panelController = panelController;
         this.executor = executor;
         this.model = storefrontModel;
         this.actionController = actionController;
+        this.fontSupplier = fontSupplier;
         this.searchBar = new SearchBar(iconFactory, storefrontModel);
 
         BorderLayout borderLayout = new BorderLayout();
@@ -76,8 +80,8 @@ class TablePanel extends JPanel {
         model.setSearchFilter("");
         tableModel.setBChecks(model.getFilteredBChecks());
 
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.addPopupMenuListener(new PopupMenuListener()
+        JPopupMenu popupMenu = new BCheckPopupMenu(actionController);
+        popupMenu.addPopupMenuListener(new InertPopupMenuListener()
         {
             @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -88,24 +92,8 @@ class TablePanel extends JPanel {
                     }
                 });
             }
-
-            @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-            }
-
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {
-            }
         });
 
-        JMenuItem copyBCheckMenuItem = new JMenuItem("Copy BCheck");
-        copyBCheckMenuItem.addActionListener(l -> actionController.copySelectedBCheck());
-
-        JMenuItem saveBCheckMenuItem = new JMenuItem("Save BCheck");
-        saveBCheckMenuItem.addActionListener(l -> actionController.saveSelectedBCheck());
-
-        popupMenu.add(copyBCheckMenuItem);
-        popupMenu.add(saveBCheckMenuItem);
         bCheckTable.setComponentPopupMenu(popupMenu);
 
         bCheckTable.setModel(tableModel);
@@ -114,6 +102,9 @@ class TablePanel extends JPanel {
         bCheckTable.getTableHeader().setReorderingAllowed(false);
         bCheckTable.getSelectionModel().addListSelectionListener(e -> handleTableRowChange(e, tableModel));
         bCheckTable.setDefaultRenderer(Tags.class, new TagRenderer(new TagColors()));
+
+        int rowHeight = (int) (fontSupplier.get().getSize() * 1.5);
+        bCheckTable.setRowHeight(rowHeight);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new GridBagLayout());
