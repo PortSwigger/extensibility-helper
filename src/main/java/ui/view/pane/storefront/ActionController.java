@@ -8,7 +8,7 @@ import ui.model.StorefrontModel;
 import java.nio.file.Path;
 import java.util.concurrent.Executor;
 
-import static ui.view.component.filechooser.ChooseMode.FILES_ONLY;
+import static ui.view.component.filechooser.ChooseMode.SAVE_FILES_ONLY;
 import static ui.view.pane.storefront.ActionCallbacks.INERT_CALLBACKS;
 
 class ActionController {
@@ -31,6 +31,10 @@ class ActionController {
         this.logger = logger;
     }
 
+    public void importSelectedBCheck() {
+        storeController.importBCheck(model.getSelectedBCheck());
+    }
+
     void copySelectedBCheck() {
         BCheck selectedBCheck = model.getSelectedBCheck();
         storeController.copyBCheck(selectedBCheck);
@@ -44,7 +48,7 @@ class ActionController {
     void saveSelectedBCheck(ActionCallbacks actionCallbacks) {
         BCheck selectedBCheck = model.getSelectedBCheck();
 
-        saveLocation.find(FILES_ONLY, selectedBCheck.filename())
+        saveLocation.find(SAVE_FILES_ONLY, selectedBCheck.filename())
                 .ifPresent(path -> {
                     actionCallbacks.actionBegun();
                     model.setStatus("");
