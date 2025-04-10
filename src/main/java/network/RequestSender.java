@@ -7,6 +7,7 @@ import logging.Logger;
 
 import java.util.Map;
 
+import static burp.api.montoya.http.RequestOptions.requestOptions;
 import static burp.api.montoya.http.message.StatusCodeClass.*;
 import static burp.api.montoya.http.message.requests.HttpRequest.httpRequestFromUrl;
 
@@ -27,7 +28,8 @@ public class RequestSender {
         }
 
         logger.logDebug("Requesting " + url);
-        HttpResponse response = http.sendRequest(request).response();
+
+        HttpResponse response = http.sendRequest(request, requestOptions().withUpstreamTLSVerification()).response();
 
         if (response.isStatusCodeClass(CLASS_4XX_CLIENT_ERRORS) || response.isStatusCodeClass(CLASS_5XX_SERVER_ERRORS)) {
             String responseBody = response.bodyToString();
@@ -35,12 +37,15 @@ public class RequestSender {
 
             logger.logError(exceptionMessage);
             throw new IllegalStateException(exceptionMessage);
-        } else if (response.isStatusCodeClass(CLASS_3XX_REDIRECTION)) {
+        }
+
+        if (response.isStatusCodeClass(CLASS_3XX_REDIRECTION)) {
             String redirectLocation = response.headerValue("Location");
             return sendRequest(redirectLocation, headers);
-        } else {
-            logger.logDebug("Request to " + url + " successful");
-            return response;
         }
+
+        logger.logDebug("Request to " + url + " successful");
+
+        return response;
     }
 }

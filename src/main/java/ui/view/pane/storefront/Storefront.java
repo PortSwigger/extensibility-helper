@@ -1,11 +1,12 @@
 package ui.view.pane.storefront;
 
-import burp.Burp;
+import data.ImportMetadata;
+import data.Item;
 import logging.Logger;
 import settings.defaultsavelocation.DefaultSaveLocationSettingsReader;
+import settings.tags.TagColors;
 import ui.controller.StoreController;
 import ui.controller.TablePanelController;
-import ui.controller.TablePanelController.DefaultTablePanelController;
 import ui.icons.IconFactory;
 import ui.model.StorefrontModel;
 
@@ -14,22 +15,23 @@ import java.awt.*;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import static java.awt.BorderLayout.CENTER;
-import static javax.swing.BorderFactory.createEmptyBorder;
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+public class Storefront<T extends Item> {
+    private final String title;
+    private final JPanel panel;
 
-public class Storefront extends JPanel {
-    public Storefront(StoreController storeController,
-                      StorefrontModel storefrontModel,
-                      Burp burp,
+    public Storefront(String title,
+                      StoreController<T> storeController,
+                      StorefrontModel<T> storefrontModel,
                       DefaultSaveLocationSettingsReader saveLocationSettingsReader,
                       Executor executor,
                       IconFactory iconFactory,
                       Logger logger,
-                      Supplier<Font> fontSupplier) {
-        super(new BorderLayout());
+                      Supplier<Font> fontSupplier,
+                      ImportMetadata importMetadata,
+                      TagColors tagColors) {
+        this.title = title;
 
-        ActionController actionController = new ActionController(
+        ActionController<T> actionController = new ActionController<>(
                 storefrontModel,
                 storeController,
                 new SaveLocation(saveLocationSettingsReader),
@@ -37,25 +39,26 @@ public class Storefront extends JPanel {
                 logger
         );
 
-        JPanel previewPanel = new PreviewPanel(storefrontModel, actionController, burp);
+        PreviewPanel<T> previewPanel = new PreviewPanel<>(storefrontModel, actionController, importMetadata);
 
-        TablePanelController panelController = new DefaultTablePanelController(storeController);
-        JPanel tablePanel = new TablePanel(
-                panelController,
+        ItemTablePanel<T> tablePanel = new ItemTablePanel<>(
+                new TablePanelController<>(storeController),
                 storefrontModel,
-                burp,
                 executor,
                 iconFactory,
                 actionController,
-                fontSupplier
+                fontSupplier,
+                tagColors
         );
 
-        JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT);
-        splitPane.add(tablePanel);
-        splitPane.add(previewPanel);
-        splitPane.setResizeWeight(0.6);
-        splitPane.setBorder(createEmptyBorder(0, 10, 0, 5));
+        this.panel = new StorefrontPanel(previewPanel, tablePanel);
+    }
 
-        add(splitPane, CENTER);
+    public String title() {
+        return title;
+    }
+
+    public Component component() {
+        return panel;
     }
 }
