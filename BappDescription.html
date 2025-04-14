@@ -1,9 +1,96 @@
-<p>More easily find and import BCheck scripts into Burp Suite - by loading them from either a remote GitHub repository or local filesystem - with BCheck Helper.</p>
+<p>Extensibility Helper streamlines the process of discovering and importing BChecks and Bambda snippets by loading them from a remote GitHub or local Git repository. Scripts can be filtered by keyword or tag and either copied to the clipboard or saved to disk for use within Burp Suite.</p>
 
-<p>Relevant BChecks can be found by searching for keywords or tags within the scripts. These can then be exported to the filesystem or copied to the clipboard to facilitate their import and subsequent use within Burp Suite.</p>
-
-<p>Once loaded, BCheck Helper will add a tab into Burp Suite titled 'BCheck Helper' - this will contain two sub-tabs:</p>
+<p>The extension adds a tab titled "Extensibility Helper", with three sub-tabs:</p>
 <ul>
-	<li>Store - this shows all BChecks that have been retrieved from the repository.</li>
-	<li>Settings - this allows configuration of the BApp.</li>
+  <li>"BCheck Store" -  displays available BChecks</li>
+  <li>"Bambda Store" - displays available Bambdas</li>
+  <li>"Settings" - provides configuration options</li>
 </ul>
+
+<h2>Features</h2>
+<ul>
+  <li>Search and filter BChecks and Bambdas by name, author, description, or tags</li>
+  <li>Import items directly into Burp</li>
+  <li>Copy scripts to clipboard or save to file</li>
+  <li>Bulk export and import supported</li>
+  <li>Supports GitHub and local Git repositories</li>
+  <li>Customizable repository and export settings</li>
+  <li>Persistent configuration between sessions</li>
+  <li>Optional logging for script operations</li>
+</ul>
+
+<h2>Usage</h2>
+
+<h3>Finding Scripts</h3>
+<p>Use the search bar in the "BCheck Store" or "Bambda Store" tab to locate scripts by keyword. Results are shown in a filterable table with name, description, and tags.</p>
+
+<h3>Importing a BCheck</h3>
+
+<h4>Direct Import</h4>
+<ol>
+  <li>Select a BCheck from the table</li>
+  <li>Click "Import"</li>
+  <li>The BCheck will appear in the BCheck table, enabled by default</li>
+</ol>
+
+<h4>Clipboard Import</h4>
+<ol>
+  <li>Select a BCheck</li>
+  <li>Click "Copy to Clipboard"</li>
+  <li>Go to "Extensions" -&gt; "BChecks"</li>
+  <li>Click "New" -&gt; "Blank"</li>
+  <li>Paste into the editor and click "Save"</li>
+</ol>
+
+<h4>File Import</h4>
+<ol>
+  <li>Click "Save to file"</li>
+  <li>Go to "Extensions" -&gt; "BChecks"</li>
+  <li>Click "Import" and select the saved file</li>
+  <li>Enable the BCheck if needed</li>
+</ol>
+
+<h4>Bulk Import</h4>
+<ol>
+  <li>Apply filters if desired</li>
+  <li>Click "Save all items to disk"</li>
+  <li>Go to "Extensions" -&gt; "BChecks"</li>
+  <li>Click "Import" and select the export directory</li>
+  <li>Enable the BChecks if needed</li>
+</ol>
+
+<h3>Importing a Bambda</h3>
+
+<h4>Clipboard Import</h4>
+<ol>
+  <li>Select a Bambda</li>
+  <li>Click "Copy to Clipboard"</li>
+  <li>Go to "Extensions" -&gt; "Bambda library"</li>
+  <li>Click "New" -&gt; "Blank"</li>
+  <li>Paste into the editor and click "Save"</li>
+</ol>
+
+<h4>File Import</h4>
+<ol>
+  <li>Click "Save to file"</li>
+  <li>Go to "Extensions" -&gt; "Bambda library"</li>
+  <li>Click "Import" and select the saved file</li>
+</ol>
+
+<h4>Bulk Import</h4>
+<ol>
+  <li>Apply filters if desired</li>
+  <li>Click "Save all items to disk"</li>
+  <li>Go to "Extensions" -&gt; "Bambda library"</li>
+  <li>Click "Import" and select the export directory</li>
+</ol>
+
+<h3>Configuration</h3>
+
+<ul>
+  <li><strong>Export Paths:</strong> Set default save locations for BChecks and Bambdas in the "Settings" tab.</li>
+  <li><strong>Repository Selection:</strong> Choose between "GitHub" and "Filesystem" sources for BChecks and Bambdas. Configure the repository URL or local path accordingly.</li>
+  <li><strong>Custom GitHub Repos:</strong> Update the repository name and URL. If private, supply an API key. Click "Refresh" to reload scripts.</li>
+  <li><strong>Logging:</strong> Enable logging in the "Settings" tab to display download and unpacking details.</li>
+</ul>
+

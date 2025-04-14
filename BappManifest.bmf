@@ -1,13 +1,13 @@
 Uuid: 41274be469184a56b06d6a791ce8a9ce
 ExtensionType: 1
-Name: BCheck Helper
-RepoName: bcheck-helper
-ScreenVersion: 2.0
-SerialVersion: 5
-MinPlatformVersion: 12
+Name: Extensibility Helper
+RepoName: extensibility-helper
+ScreenVersion: 3.0
+SerialVersion: 6
+MinPlatformVersion: 18
 ProOnly: True
-Author: Josh S, PortSwigger & Dolph Flynn
-ShortDescription: This extension provides a quick way to view and download BChecks in any given GitHub repository. 
-EntryPoint: build/libs/bcheck-helper.jar
+Author: Josh S, PortSwigger, Dolph Flynn, Hannah L, PortSwigger
+ShortDescription: This extension provides a quick way to view and download BChecks and Bambdas in any given GitHub repository. 
+EntryPoint: build/libs/extensibility-helper-3.0.0.jar
 BuildCommand: ./gradlew jar
 SupportedProducts: Pro
