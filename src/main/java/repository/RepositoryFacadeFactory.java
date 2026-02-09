@@ -2,6 +2,7 @@ package repository;
 
 import burp.api.montoya.http.Http;
 import client.GitHubClient;
+import client.GitLabClient;
 import data.Item;
 import data.ItemFactory;
 import data.RepositoryMetadata;
@@ -26,6 +27,7 @@ public class RepositoryFacadeFactory {
                                RepositoryMetadata repositoryMetadata) {
         RequestSender requestSender = new RequestSender(http, logger);
         GitHubClient gitHubClient = new GitHubClient(requestSender);
+        GitLabClient gitLabClient = new GitLabClient(requestSender);
         TempFileCreator tempFileCreator = new TempFileCreator(logger);
         ZipExtractor zipExtractor = new ZipExtractor(logger);
         FileFinder fileFinder = new FileFinder();
@@ -40,6 +42,16 @@ public class RepositoryFacadeFactory {
                 repositoryMetadata
         );
 
+        GitLabRepository<T> gitLabRepository = new GitLabRepository<>(
+                itemFactory,
+                gitLabClient,
+                tempFileCreator,
+                zipExtractor,
+                fileFinder,
+                settingsController.gitLabSettings(),
+                repositoryMetadata
+        );
+
         FileSystemRepository<T> fileSystemRepository = new FileSystemRepository<>(
                 settingsController.fileSystemRepositorySettings(),
                 fileFinder,
@@ -51,6 +63,7 @@ public class RepositoryFacadeFactory {
         return new RepositoryFacade<>(
                 settingsController.repositorySettings(),
                 gitHubRepository,
+                gitLabRepository,
                 fileSystemRepository
         );
     }

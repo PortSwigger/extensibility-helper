@@ -4,7 +4,8 @@ import static java.util.Arrays.stream;
 
 public enum RepositoryType {
     FILESYSTEM("Filesystem", "filesystem"),
-    GITHUB("GitHub", "github");
+    GITHUB("GitHub", "github"),
+    GITLAB("GitLab", "gitlab");
 
     public final String displayName;
     public final String persistedKey;

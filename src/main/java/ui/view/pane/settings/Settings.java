@@ -19,6 +19,7 @@ public class Settings extends JTabbedPane {
                         new RepositorySettingsComponent(
                                 settingsController.bCheckSettingsController().repositorySettings(),
                                 settingsController.bCheckSettingsController().gitHubSettings(),
+                                settingsController.bCheckSettingsController().gitLabSettings(),
                                 settingsController.bCheckSettingsController().fileSystemRepositorySettings(),
                                 BCHECK
                         )
@@ -35,6 +36,7 @@ public class Settings extends JTabbedPane {
                         new RepositorySettingsComponent(
                                 settingsController.bambdaSettingsController().repositorySettings(),
                                 settingsController.bambdaSettingsController().gitHubSettings(),
+                                settingsController.bambdaSettingsController().gitLabSettings(),
                                 settingsController.bambdaSettingsController().fileSystemRepositorySettings(),
                                 BAMBDA
                         )

@@ -6,17 +6,20 @@ import settings.defaultsavelocation.DefaultSaveLocationSettings;
 import settings.repository.RepositorySettings;
 import settings.repository.filesystem.FileSystemRepositorySettings;
 import settings.repository.github.GitHubSettings;
+import settings.repository.gitlab.GitLabSettings;
 
 public class ItemSettingsController {
     private final DefaultSaveLocationSettings defaultSaveLocationSettings;
     private final RepositorySettings repositorySettings;
     private final GitHubSettings gitHubSettings;
+    private final GitLabSettings gitLabSettings;
     private final FileSystemRepositorySettings fileSystemRepositorySettings;
 
     public ItemSettingsController(Preferences preferences, ItemMetadata itemMetadata) {
         this.defaultSaveLocationSettings = new DefaultSaveLocationSettings(preferences, itemMetadata);
         this.repositorySettings = new RepositorySettings(preferences, itemMetadata);
         this.gitHubSettings = new GitHubSettings(preferences, itemMetadata);
+        this.gitLabSettings = new GitLabSettings(preferences, itemMetadata);
         this.fileSystemRepositorySettings = new FileSystemRepositorySettings(preferences, itemMetadata);
     }
 
@@ -30,6 +33,10 @@ public class ItemSettingsController {
 
     public GitHubSettings gitHubSettings() {
         return gitHubSettings;
+    }
+
+    public GitLabSettings gitLabSettings() {
+        return gitLabSettings;
     }
 
     public FileSystemRepositorySettings fileSystemRepositorySettings() {
