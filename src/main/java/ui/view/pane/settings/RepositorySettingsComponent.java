@@ -5,6 +5,7 @@ import repository.RepositoryType;
 import settings.repository.RepositorySettings;
 import settings.repository.filesystem.FileSystemRepositorySettings;
 import settings.repository.github.GitHubSettings;
+import settings.repository.gitlab.GitLabSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ class RepositorySettingsComponent implements SettingsComponent {
     private final JPanel component;
     private final RepositorySettings repositorySettings;
     private final GitHubSettings gitHubSettings;
+    private final GitLabSettings gitLabSettings;
     private final FileSystemRepositorySettings fileSystemRepositorySettings;
     private final NameMetadata nameMetadata;
 
@@ -23,10 +25,12 @@ class RepositorySettingsComponent implements SettingsComponent {
 
     RepositorySettingsComponent(RepositorySettings repositorySettings,
                                 GitHubSettings gitHubSettings,
+                                GitLabSettings gitLabSettings,
                                 FileSystemRepositorySettings fileSystemRepositorySettings,
                                 NameMetadata nameMetadata) {
         this.repositorySettings = repositorySettings;
         this.gitHubSettings = gitHubSettings;
+        this.gitLabSettings = gitLabSettings;
         this.fileSystemRepositorySettings = fileSystemRepositorySettings;
         this.nameMetadata = nameMetadata;
         component = new JPanel();
@@ -82,6 +86,7 @@ class RepositorySettingsComponent implements SettingsComponent {
         subComponent = switch (repositoryType) {
             case GITHUB -> new GitHubRepositorySettingsSubComponent(gitHubSettings);
             case FILESYSTEM -> new FileSystemRepositorySettingsSubComponent(fileSystemRepositorySettings);
+            case GITLAB -> new GitLabRepositorySettingsSubComponent(gitLabSettings);
         };
 
         component.add(subComponent, constraints);
