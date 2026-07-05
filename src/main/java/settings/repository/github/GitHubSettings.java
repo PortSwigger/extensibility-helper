@@ -3,8 +3,9 @@ package settings.repository.github;
 import burp.api.montoya.persistence.Preferences;
 import data.RepositoryMetadata;
 import settings.AbstractSettings;
+import settings.repository.RemoteRepositorySettingsReader;
 
-public class GitHubSettings extends AbstractSettings implements GitHubSettingsReader {
+public class GitHubSettings extends AbstractSettings implements RemoteRepositorySettingsReader {
     private static final String GITHUB_API_URL = "https://api.github.com";
     private static final String API_KEY_KEY = "github_settings.api_key"; //TODO should this be shared across instances or unique?
 

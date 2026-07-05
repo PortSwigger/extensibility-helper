@@ -3,10 +3,12 @@ package settings.repository.gitlab;
 import burp.api.montoya.persistence.Preferences;
 import data.RepositoryMetadata;
 import settings.AbstractSettings;
+import settings.repository.RemoteRepositorySettingsReader;
 
-public class GitLabSettings extends AbstractSettings implements GitLabSettingsReader {
+public class GitLabSettings extends AbstractSettings implements RemoteRepositorySettingsReader {
     private static final String GITLAB_API_URL = "https://gitlab.com";
     private static final String API_KEY_KEY = "gitlab_settings.api_key";
+
     private final RepositoryMetadata repositoryMetadata;
 
     public GitLabSettings(Preferences preferences, RepositoryMetadata repositoryMetadata) {

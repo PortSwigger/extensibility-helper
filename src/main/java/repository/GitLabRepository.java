@@ -7,7 +7,7 @@ import data.RepositoryMetadata;
 import file.finder.FileFinder;
 import file.temp.TempFileCreator;
 import file.zip.ZipExtractor;
-import settings.repository.gitlab.GitLabSettingsReader;
+import settings.repository.RemoteRepositorySettingsReader;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -17,7 +17,7 @@ public class GitLabRepository<T extends Item> implements Repository<T> {
     private final TempFileCreator tempFileCreator;
     private final ZipExtractor zipExtractor;
     private final FileFinder fileFinder;
-    private final GitLabSettingsReader gitLabSettings;
+    private final RemoteRepositorySettingsReader gitLabSettings;
     private final RepositoryMetadata repositoryMetadata;
     private final ItemFactory<T> itemFactory;
 
@@ -27,7 +27,7 @@ public class GitLabRepository<T extends Item> implements Repository<T> {
             TempFileCreator tempFileCreator,
             ZipExtractor zipExtractor,
             FileFinder fileFinder,
-            GitLabSettingsReader gitLabSettings,
+            RemoteRepositorySettingsReader gitLabSettings,
             RepositoryMetadata repositoryMetadata) {
         this.itemFactory = itemFactory;
         this.gitLabClient = gitLabClient;
