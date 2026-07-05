@@ -6,7 +6,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
-public class GitLabClient {
+public class GitLabClient implements HttpClient{
     private static final String REPOSITORY_ZIPBALL_URL_TEMPLATE = "%s/api/v4/projects/%s/repository/archive.zip";
 
     private final RequestSender requestSender;
@@ -15,6 +15,7 @@ public class GitLabClient {
         this.requestSender = requestSender;
     }
 
+    @Override
     public byte[] downloadRepoAsZip(String repositoryUrl, String repositoryId, String apiKey) {
         String trimmedRepositoryUrl = repositoryUrl.trim().replaceAll("/$", "");
         String url = REPOSITORY_ZIPBALL_URL_TEMPLATE.formatted(trimmedRepositoryUrl, repositoryId);

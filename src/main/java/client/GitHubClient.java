@@ -6,7 +6,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
-public class GitHubClient {
+public class GitHubClient implements HttpClient{
     private static final String REPOSITORY_ZIPBALL_URL_TEMPLATE = "%s/repos/%s/zipball";
 
     private final RequestSender requestSender;
@@ -15,6 +15,7 @@ public class GitHubClient {
         this.requestSender = requestSender;
     }
 
+    @Override
     public byte[] downloadRepoAsZip(String repositoryUrl, String repositoryName, String apiKey) {
         String trimmedRepositoryUrl = repositoryUrl.trim().replaceAll("/$", "");
         String url = REPOSITORY_ZIPBALL_URL_TEMPLATE.formatted(trimmedRepositoryUrl, repositoryName);

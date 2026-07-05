@@ -1,6 +1,6 @@
 package repository;
 
-import client.GitHubClient;
+import client.HttpClient;
 import data.Item;
 import data.ItemFactory;
 import data.RepositoryMetadata;
@@ -12,39 +12,39 @@ import settings.repository.RemoteRepositorySettingsReader;
 import java.nio.file.Path;
 import java.util.List;
 
-public class GitHubRepository<T extends Item> implements Repository<T> {
-    private final GitHubClient gitHubClient;
+public class RemoteRepository<T extends Item> implements Repository<T> {
+    private final HttpClient httpClient;
     private final TempFileCreator tempFileCreator;
     private final ZipExtractor zipExtractor;
     private final FileFinder fileFinder;
-    private final RemoteRepositorySettingsReader gitHubSettings;
+    private final RemoteRepositorySettingsReader gitLabSettings;
     private final RepositoryMetadata repositoryMetadata;
     private final ItemFactory<T> itemFactory;
 
-    public GitHubRepository(
+    public RemoteRepository(
             ItemFactory<T> itemFactory,
-            GitHubClient gitHubClient,
+            HttpClient httpClient,
             TempFileCreator tempFileCreator,
             ZipExtractor zipExtractor,
             FileFinder fileFinder,
-            RemoteRepositorySettingsReader gitHubSettings,
+            RemoteRepositorySettingsReader gitLabSettings,
             RepositoryMetadata repositoryMetadata) {
         this.itemFactory = itemFactory;
-        this.gitHubClient = gitHubClient;
+        this.httpClient = httpClient;
         this.tempFileCreator = tempFileCreator;
         this.zipExtractor = zipExtractor;
         this.fileFinder = fileFinder;
-        this.gitHubSettings = gitHubSettings;
+        this.gitLabSettings = gitLabSettings;
         this.repositoryMetadata = repositoryMetadata;
     }
 
     @Override
     public List<T> loadAllItems() {
         Path downloadLocation = tempFileCreator.createTempDirectory(repositoryMetadata.getTempDirectoryPrefix());
-        byte[] itemsAsZip = gitHubClient.downloadRepoAsZip(
-                gitHubSettings.repositoryUrl(),
-                gitHubSettings.repositoryName(),
-                gitHubSettings.apiKey()
+        byte[] itemsAsZip = httpClient.downloadRepoAsZip(
+                gitLabSettings.repositoryUrl(),
+                gitLabSettings.repositoryName(),
+                gitLabSettings.apiKey()
         );
 
         zipExtractor.extractZip(itemsAsZip, downloadLocation);

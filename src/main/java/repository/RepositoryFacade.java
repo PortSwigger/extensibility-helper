@@ -7,14 +7,14 @@ import java.util.List;
 
 public class RepositoryFacade<T extends Item> implements Repository<T> {
     private final FileSystemRepository<T> fileSystemRepository;
-    private final GitHubRepository<T> gitHubRepository;
-    private final GitLabRepository<T> gitLabRepository;
+    private final RemoteRepository<T> gitHubRepository;
+    private final RemoteRepository<T> gitLabRepository;
     private final RepositorySettingsReader repositorySettingsReader;
 
     public RepositoryFacade(
             RepositorySettingsReader repositorySettingsReader,
-            GitHubRepository<T> gitHubRepository,
-            GitLabRepository<T> gitLabRepository,
+            RemoteRepository<T> gitHubRepository,
+            RemoteRepository<T> gitLabRepository,
             FileSystemRepository<T> fileSystemRepository) {
         this.fileSystemRepository = fileSystemRepository;
         this.gitHubRepository = gitHubRepository;
