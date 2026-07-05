@@ -10,8 +10,8 @@ import java.awt.*;
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
 class RemoteRepositorySettingsSubComponent extends JPanel {
-    private final JLabel descriptionLabelSecondLine = new JLabel("If the repo isn't public, you'll need to specify an API key too. You can look at GitLab's documentation to find out how to create one.");
-    private final JLabel descriptionLabelThirdLine = new JLabel("If you're using the same API key across multiple applications, you might exceed GitLab's rate limit, meaning that this extension will no longer work until the rate limit resets.");
+    private final JLabel descriptionLabelSecondLine;
+    private final JLabel descriptionLabelThirdLine;
     private final JLabel repoNameDescription;
     private final JLabel repoUrlDescription;
     private final JLabel apiKeyDescription = new JLabel("API key (only needed if it is a private repo)");
@@ -27,6 +27,8 @@ class RemoteRepositorySettingsSubComponent extends JPanel {
         initialiseUi();
         repoNameDescription = new JLabel(repositoryConfig.nameDescription);
         repoUrlDescription = new JLabel(repositoryConfig.urlDescription);
+        descriptionLabelSecondLine = new JLabel("If the repo isn't public, you'll need to specify an API key too. You can look at %s's documentation to find out how to create one.".formatted(repositoryConfig.repositoryName));
+        descriptionLabelThirdLine = new JLabel("If you're using the same API key across multiple applications, you might exceed %s's rate limit, meaning that this extension will no longer work until the rate limit resets.".formatted(repositoryConfig.repositoryName));
     }
 
     private void initialiseUi() {
