@@ -36,7 +36,7 @@ class RemoteRepositorySettingsSubComponent extends JPanel {
         setupRepoURLField();
         setupApiKeyField();
 
-        addElements();
+        EventQueue.invokeLater(this::addElements);
     }
 
     private void setupLayout() {
