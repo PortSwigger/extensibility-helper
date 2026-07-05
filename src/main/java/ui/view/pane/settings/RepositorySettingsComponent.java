@@ -2,6 +2,7 @@ package ui.view.pane.settings;
 
 import data.NameMetadata;
 import repository.RepositoryType;
+import settings.repository.RemoteRepositoryConfig;
 import settings.repository.RemoteRepositorySettings;
 import settings.repository.RepositorySettings;
 import settings.repository.filesystem.FileSystemRepositorySettings;
@@ -83,9 +84,9 @@ class RepositorySettingsComponent implements SettingsComponent {
         repositorySettings.setRepositoryType(repositoryType);
 
         subComponent = switch (repositoryType) {
-            case GITHUB -> new GitHubRepositorySettingsSubComponent(gitHubSettings);
             case FILESYSTEM -> new FileSystemRepositorySettingsSubComponent(fileSystemRepositorySettings);
-            case GITLAB -> new GitLabRepositorySettingsSubComponent(gitLabSettings);
+            case GITHUB -> new RemoteRepositorySettingsSubComponent(gitHubSettings, RemoteRepositoryConfig.GITHUB);
+            case GITLAB -> new RemoteRepositorySettingsSubComponent(gitLabSettings, RemoteRepositoryConfig.GITLAB);
         };
 
         component.add(subComponent, constraints);

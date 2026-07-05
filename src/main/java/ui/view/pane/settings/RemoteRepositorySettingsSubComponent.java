@@ -1,5 +1,6 @@
 package ui.view.pane.settings;
 
+import settings.repository.RemoteRepositoryConfig;
 import settings.repository.RemoteRepositorySettings;
 import ui.view.listener.SingleHandlerDocumentListener;
 
@@ -8,22 +9,24 @@ import java.awt.*;
 
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 
-class GitHubRepositorySettingsSubComponent extends JPanel {
-    private final JLabel descriptionLabelSecondLine = new JLabel("If the repo isn't public, you'll need to specify an API key too. You can look at GitHub's documentation to find out how to create one.");
-    private final JLabel descriptionLabelThirdLine = new JLabel("If you're using the same API key across multiple applications, you might exceed GitHub's rate limit, meaning that this extension will no longer work until the rate limit resets.");
-    private final JLabel repoNameDescription = new JLabel("Repo name (in owner/repo format e.g. portswigger/bchecks)");
-    private final JLabel repoUrlDescription = new JLabel("GitHub API URL");
+class RemoteRepositorySettingsSubComponent extends JPanel {
+    private final JLabel descriptionLabelSecondLine = new JLabel("If the repo isn't public, you'll need to specify an API key too. You can look at GitLab's documentation to find out how to create one.");
+    private final JLabel descriptionLabelThirdLine = new JLabel("If you're using the same API key across multiple applications, you might exceed GitLab's rate limit, meaning that this extension will no longer work until the rate limit resets.");
+    private final JLabel repoNameDescription;
+    private final JLabel repoUrlDescription;
     private final JLabel apiKeyDescription = new JLabel("API key (only needed if it is a private repo)");
     private final JTextField repoNameField = new JTextField();
     private final JTextField repoUrlField = new JTextField();
     private final JTextField apiKeyField = new JTextField();
 
-    private final RemoteRepositorySettings gitHubSettings;
+    private final RemoteRepositorySettings repositorySettings;
 
-    GitHubRepositorySettingsSubComponent(RemoteRepositorySettings gitHubSettings) {
-        this.gitHubSettings = gitHubSettings;
+    RemoteRepositorySettingsSubComponent(RemoteRepositorySettings repositorySettings, RemoteRepositoryConfig repositoryConfig) {
+        this.repositorySettings = repositorySettings;
 
         initialiseUi();
+        repoNameDescription = new JLabel(repositoryConfig.nameDescription);
+        repoUrlDescription = new JLabel(repositoryConfig.urlDescription);
     }
 
     private void initialiseUi() {
@@ -45,26 +48,26 @@ class GitHubRepositorySettingsSubComponent extends JPanel {
     }
 
     private void setupRepoNameField() {
-        repoNameField.setText(gitHubSettings.repositoryName());
+        repoNameField.setText(repositorySettings.repositoryName());
         repoNameField.setColumns(40);
         repoNameField.getDocument().addDocumentListener(
-                new SingleHandlerDocumentListener(e -> gitHubSettings.setRepositoryName(repoNameField.getText()))
+                new SingleHandlerDocumentListener(e -> repositorySettings.setRepositoryName(repoNameField.getText()))
         );
     }
 
     private void setupRepoURLField() {
-        repoUrlField.setText(gitHubSettings.repositoryUrl());
+        repoUrlField.setText(repositorySettings.repositoryUrl());
         repoUrlField.setColumns(40);
         repoUrlField.getDocument().addDocumentListener(
-                new SingleHandlerDocumentListener(e -> gitHubSettings.setRepositoryUrl(repoUrlField.getText()))
+                new SingleHandlerDocumentListener(e -> repositorySettings.setRepositoryUrl(repoUrlField.getText()))
         );
     }
 
     private void setupApiKeyField() {
-        apiKeyField.setText(gitHubSettings.apiKey());
+        apiKeyField.setText(repositorySettings.apiKey());
         apiKeyField.setColumns(40);
         apiKeyField.getDocument().addDocumentListener(
-                new SingleHandlerDocumentListener(e -> gitHubSettings.setApiKey(apiKeyField.getText()))
+                new SingleHandlerDocumentListener(e -> repositorySettings.setApiKey(apiKeyField.getText()))
         );
     }
 
