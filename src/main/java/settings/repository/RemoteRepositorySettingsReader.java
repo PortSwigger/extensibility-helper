@@ -1,6 +1,6 @@
-package settings.repository.gitlab;
+package settings.repository;
 
-public interface GitLabSettingsReader {
+public interface RemoteRepositorySettingsReader {
     String repositoryUrl();
 
     String repositoryName();

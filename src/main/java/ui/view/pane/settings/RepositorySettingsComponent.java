@@ -2,10 +2,10 @@ package ui.view.pane.settings;
 
 import data.NameMetadata;
 import repository.RepositoryType;
+import settings.repository.RemoteRepositoryConfig;
+import settings.repository.RemoteRepositorySettings;
 import settings.repository.RepositorySettings;
 import settings.repository.filesystem.FileSystemRepositorySettings;
-import settings.repository.github.GitHubSettings;
-import settings.repository.gitlab.GitLabSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,16 +16,16 @@ import static java.awt.GridBagConstraints.HORIZONTAL;
 class RepositorySettingsComponent implements SettingsComponent {
     private final JPanel component;
     private final RepositorySettings repositorySettings;
-    private final GitHubSettings gitHubSettings;
-    private final GitLabSettings gitLabSettings;
+    private final RemoteRepositorySettings gitHubSettings;
+    private final RemoteRepositorySettings gitLabSettings;
     private final FileSystemRepositorySettings fileSystemRepositorySettings;
     private final NameMetadata nameMetadata;
 
     private JComponent subComponent;
 
     RepositorySettingsComponent(RepositorySettings repositorySettings,
-                                GitHubSettings gitHubSettings,
-                                GitLabSettings gitLabSettings,
+                                RemoteRepositorySettings gitHubSettings,
+                                RemoteRepositorySettings gitLabSettings,
                                 FileSystemRepositorySettings fileSystemRepositorySettings,
                                 NameMetadata nameMetadata) {
         this.repositorySettings = repositorySettings;
@@ -84,9 +84,9 @@ class RepositorySettingsComponent implements SettingsComponent {
         repositorySettings.setRepositoryType(repositoryType);
 
         subComponent = switch (repositoryType) {
-            case GITHUB -> new GitHubRepositorySettingsSubComponent(gitHubSettings);
             case FILESYSTEM -> new FileSystemRepositorySettingsSubComponent(fileSystemRepositorySettings);
-            case GITLAB -> new GitLabRepositorySettingsSubComponent(gitLabSettings);
+            case GITHUB -> new RemoteRepositorySettingsSubComponent(gitHubSettings, RemoteRepositoryConfig.GITHUB);
+            case GITLAB -> new RemoteRepositorySettingsSubComponent(gitLabSettings, RemoteRepositoryConfig.GITLAB);
         };
 
         component.add(subComponent, constraints);

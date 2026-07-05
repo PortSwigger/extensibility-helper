@@ -32,7 +32,7 @@ public class RepositoryFacadeFactory {
         ZipExtractor zipExtractor = new ZipExtractor(logger);
         FileFinder fileFinder = new FileFinder();
 
-        GitHubRepository<T> gitHubRepository = new GitHubRepository<>(
+        RemoteRepository<T> gitHubRepository = new RemoteRepository<>(
                 itemFactory,
                 gitHubClient,
                 tempFileCreator,
@@ -42,7 +42,7 @@ public class RepositoryFacadeFactory {
                 repositoryMetadata
         );
 
-        GitLabRepository<T> gitLabRepository = new GitLabRepository<>(
+        RemoteRepository<T> gitLabRepository = new RemoteRepository<>(
                 itemFactory,
                 gitLabClient,
                 tempFileCreator,
