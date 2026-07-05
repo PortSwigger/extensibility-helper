@@ -1,6 +1,6 @@
 package ui.view.pane.settings;
 
-import settings.repository.github.GitHubSettings;
+import settings.repository.RemoteRepositorySettings;
 import ui.view.listener.SingleHandlerDocumentListener;
 
 import javax.swing.*;
@@ -18,9 +18,9 @@ class GitHubRepositorySettingsSubComponent extends JPanel {
     private final JTextField repoUrlField = new JTextField();
     private final JTextField apiKeyField = new JTextField();
 
-    private final GitHubSettings gitHubSettings;
+    private final RemoteRepositorySettings gitHubSettings;
 
-    GitHubRepositorySettingsSubComponent(GitHubSettings gitHubSettings) {
+    GitHubRepositorySettingsSubComponent(RemoteRepositorySettings gitHubSettings) {
         this.gitHubSettings = gitHubSettings;
 
         initialiseUi();

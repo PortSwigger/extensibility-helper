@@ -1,6 +1,6 @@
 package ui.view.pane.settings;
 
-import settings.repository.gitlab.GitLabSettings;
+import settings.repository.RemoteRepositorySettings;
 import ui.view.listener.SingleHandlerDocumentListener;
 
 import javax.swing.*;
@@ -18,9 +18,9 @@ class GitLabRepositorySettingsSubComponent extends JPanel {
     private final JTextField repoUrlField = new JTextField();
     private final JTextField apiKeyField = new JTextField();
 
-    private final GitLabSettings gitLabSettings;
+    private final RemoteRepositorySettings gitLabSettings;
 
-    GitLabRepositorySettingsSubComponent(GitLabSettings gitLabSettings) {
+    GitLabRepositorySettingsSubComponent(RemoteRepositorySettings gitLabSettings) {
         this.gitLabSettings = gitLabSettings;
 
         initialiseUi();
