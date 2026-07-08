@@ -60,7 +60,7 @@ class DefaultSaveLocationSettingsComponent implements SettingsComponent {
         chooseFileButton.setVisible(potentialDefaultSaveLocation.isPresent());
         chooseFileButton.addActionListener(e -> {
             if (e.getSource() == chooseFileButton) {
-                Optional<Path> selectedDirectory = new FileChooser(SAVE_DIRECTORIES_ONLY).prompt();
+                Optional<Path> selectedDirectory = new FileChooser(SAVE_DIRECTORIES_ONLY, component).prompt();
 
                 selectedDirectory.ifPresent(file -> {
                     String pathToDirectory = file.toAbsolutePath().toString();

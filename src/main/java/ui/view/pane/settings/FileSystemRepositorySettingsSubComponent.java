@@ -43,7 +43,7 @@ class FileSystemRepositorySettingsSubComponent extends JPanel {
         JButton chooseRootButton = new JButton("Choose directory");
 
         chooseRootButton.addActionListener(e -> {
-            Optional<Path> selectedDirectory = new FileChooser(OPEN_DIRECTORIES_ONLY).prompt();
+            Optional<Path> selectedDirectory = new FileChooser(OPEN_DIRECTORIES_ONLY, this).prompt();
 
             selectedDirectory.ifPresent(file -> {
                 String pathToDirectory = file.toAbsolutePath().toString();

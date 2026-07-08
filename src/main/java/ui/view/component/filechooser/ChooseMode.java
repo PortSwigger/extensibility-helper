@@ -1,6 +1,7 @@
 package ui.view.component.filechooser;
 
 import javax.swing.*;
+import java.awt.*;
 
 public enum ChooseMode {
     SAVE_FILES_ONLY(JFileChooser.FILES_ONLY),
@@ -13,11 +14,11 @@ public enum ChooseMode {
         this.jFileChooserMode = jFileChooserMode;
     }
 
-    int showDialog(JFileChooser fileChooser) {
+    int showDialog(JFileChooser fileChooser, Component parent) {
         fileChooser.setFileSelectionMode(jFileChooserMode);
 
         return switch(this) {
-            case SAVE_FILES_ONLY, SAVE_DIRECTORIES_ONLY -> fileChooser.showSaveDialog(null);
+            case SAVE_FILES_ONLY, SAVE_DIRECTORIES_ONLY -> fileChooser.showSaveDialog(parent);
             case OPEN_DIRECTORIES_ONLY -> fileChooser.showOpenDialog(null);
         };
     }

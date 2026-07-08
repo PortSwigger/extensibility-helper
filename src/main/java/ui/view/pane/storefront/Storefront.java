@@ -13,6 +13,7 @@ import ui.model.StorefrontModel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 public class Storefront<T extends Item> {
@@ -31,10 +32,12 @@ public class Storefront<T extends Item> {
                       TagColors tagColors) {
         this.title = title;
 
+        AtomicReference<Component> component = new AtomicReference<>();
+
         ActionController<T> actionController = new ActionController<>(
                 storefrontModel,
                 storeController,
-                new SaveLocation(saveLocationSettingsReader),
+                new SaveLocation(saveLocationSettingsReader, component::get),
                 executor,
                 logger
         );
@@ -52,6 +55,7 @@ public class Storefront<T extends Item> {
         );
 
         this.panel = new StorefrontPanel(previewPanel, tablePanel);
+        component.set(panel);
     }
 
     public String title() {
