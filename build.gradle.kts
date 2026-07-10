@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.portswigger.burp.extensions:montoya-api:2026.4")
+    compileOnly("net.portswigger.burp.extensions:montoya-api:2025.4")
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
     testImplementation("org.assertj:assertj-core:3.27.7")
     testImplementation("org.mockito:mockito-core:5.23.0")
@@ -21,12 +21,12 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 checkstyle {
-    toolVersion = "10.12.4"
+    toolVersion = "13.7.0"
 }
 
 tasks.withType<Checkstyle> {
