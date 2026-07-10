@@ -10,6 +10,7 @@ import settings.repository.filesystem.FileSystemRepositorySettings;
 import javax.swing.*;
 import java.awt.*;
 
+import static java.awt.EventQueue.invokeLater;
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 import static java.awt.GridBagConstraints.HORIZONTAL;
 
@@ -65,7 +66,7 @@ class RepositorySettingsComponent implements SettingsComponent {
         constraints.gridy = 2;
         component.add(repositoryTypeComboBox, constraints);
 
-        configureSubComponent(repositorySettings.repositoryType());
+        invokeLater(() -> configureSubComponent(repositorySettings.repositoryType()));
     }
 
     private void configureSubComponent(RepositoryType repositoryType) {
