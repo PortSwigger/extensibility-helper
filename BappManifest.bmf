@@ -3,7 +3,7 @@ ExtensionType: 1
 Name: Extensibility Helper
 RepoName: extensibility-helper
 ScreenVersion: 3.2.1
-SerialVersion: 10
+SerialVersion: 11
 MinPlatformVersion: 21
 ProOnly: True
 Author: Josh S, PortSwigger, Dolph Flynn, Hannah L, PortSwigger
