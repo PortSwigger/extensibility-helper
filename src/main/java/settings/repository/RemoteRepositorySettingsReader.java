@@ -1,6 +1,6 @@
-package settings.repository.github;
+package settings.repository;
 
-public interface GitHubSettingsReader {
+public interface RemoteRepositorySettingsReader {
     String repositoryUrl();
 
     String repositoryName();

@@ -1,5 +1,5 @@
 # Extensibility Helper
-*Extensibility Helper* makes finding and importing BChecks scripts and Bambda snippets into Burp easier by loading them from either a remote GitHub or local Git repository.
+*Extensibility Helper* makes finding and importing BChecks scripts and Bambda snippets into Burp easier by loading them from either a remote GitHub/GitLab or local Git repository.
 
 Relevant BChecks or Bambdas can be found by searching for keywords or tags within the scripts.
 These can then be exported to the filesystem or copied to the clipboard to facilitate their import and subsequent
@@ -22,7 +22,7 @@ Alternatively, *Extensibility Helper* can be built from source.
 
 * Ensure that Java JDK 21 or newer is installed
 * From the root of the project, run the command `./gradlew jar`
-* This should place the JAR file `extensibility-helper-3.0.0.jar` within the `build/libs` directory
+* This should place the JAR file `extensibility-helper-3.2.0.jar` within the `build/libs` directory
 * This can be loaded into Burp by navigating to the 'Extensions' tab, 'Installed' sub-tab, clicking the 'Add' button and loading the JAR file
 
 ## Requirements
@@ -50,7 +50,7 @@ The filter performs a case-insensitive match on items containing the search term
 
 ## Importing Items
 ### BChecks
-#### Importing a single BCheck directly (Burp 2023.12 onwards)
+#### Importing a single BCheck directly
 1. Select the relevant BCheck within the table
 2. Click the 'Import' button
 
@@ -155,16 +155,16 @@ By default, BChecks will be loaded from
 PortSwigger's [curated BCheck GitHub repository](https://github.com/portswigger/bchecks) and Bambdas will be loaded from PortSwigger's [curated Bambda GitHub repository](https://github.com/portswigger/bambdas) where Burp users can share their
 scripts. 
 
-In general, items can either be loaded from either a GitHub server or a local Git repository. 
-You can choose between these options by toggling the 'Repository type' option between 'GitHub' and 'Filesystem' under the
+In general, items can either be loaded from either a GitHub/GitLab server or a local Git repository. 
+You can choose between these options by toggling the 'Repository type' option between 'GitHub', 'GitLab' and 'Filesystem' under the
 'Repository configuration - BCheck/Bambda' section of the settings tab, and then change the respective settings that appear. 
 
-#### Configuring a different GitHub repository
-Change the 'Repository type' option to 'GitHub'.
+#### Configuring a different remote repository
+Change the 'Repository type' option to 'GitHub' or 'GitLab'.
 
-The 'Repo name' setting within the 'GitHub configuration' panel can be used to point to a different repository.
+The 'Repo name' setting within the 'GitHub configuration' or 'GitLab configuration' panels can be used to point to a different repository.
 By default, this should be hosted on [GitHub](https://github.com/), but the 'Repo URL' setting can be used to fetch BChecks from
-alternative GitHub servers.
+alternative GitHub or GitLab servers.
 
 If the repository is private, then you will need to provide an API key within the 'API key' field.
 

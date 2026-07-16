@@ -2,31 +2,36 @@ package ui.view.pane.settings;
 
 import data.NameMetadata;
 import repository.RepositoryType;
+import settings.repository.RemoteRepositoryConfig;
+import settings.repository.RemoteRepositorySettings;
 import settings.repository.RepositorySettings;
 import settings.repository.filesystem.FileSystemRepositorySettings;
-import settings.repository.github.GitHubSettings;
 
 import javax.swing.*;
 import java.awt.*;
 
+import static java.awt.EventQueue.invokeLater;
 import static java.awt.GridBagConstraints.FIRST_LINE_START;
 import static java.awt.GridBagConstraints.HORIZONTAL;
 
 class RepositorySettingsComponent implements SettingsComponent {
     private final JPanel component;
     private final RepositorySettings repositorySettings;
-    private final GitHubSettings gitHubSettings;
+    private final RemoteRepositorySettings gitHubSettings;
+    private final RemoteRepositorySettings gitLabSettings;
     private final FileSystemRepositorySettings fileSystemRepositorySettings;
     private final NameMetadata nameMetadata;
 
     private JComponent subComponent;
 
     RepositorySettingsComponent(RepositorySettings repositorySettings,
-                                GitHubSettings gitHubSettings,
+                                RemoteRepositorySettings gitHubSettings,
+                                RemoteRepositorySettings gitLabSettings,
                                 FileSystemRepositorySettings fileSystemRepositorySettings,
                                 NameMetadata nameMetadata) {
         this.repositorySettings = repositorySettings;
         this.gitHubSettings = gitHubSettings;
+        this.gitLabSettings = gitLabSettings;
         this.fileSystemRepositorySettings = fileSystemRepositorySettings;
         this.nameMetadata = nameMetadata;
         component = new JPanel();
@@ -61,7 +66,7 @@ class RepositorySettingsComponent implements SettingsComponent {
         constraints.gridy = 2;
         component.add(repositoryTypeComboBox, constraints);
 
-        configureSubComponent(repositorySettings.repositoryType());
+        invokeLater(() -> configureSubComponent(repositorySettings.repositoryType()));
     }
 
     private void configureSubComponent(RepositoryType repositoryType) {
@@ -80,8 +85,9 @@ class RepositorySettingsComponent implements SettingsComponent {
         repositorySettings.setRepositoryType(repositoryType);
 
         subComponent = switch (repositoryType) {
-            case GITHUB -> new GitHubRepositorySettingsSubComponent(gitHubSettings);
             case FILESYSTEM -> new FileSystemRepositorySettingsSubComponent(fileSystemRepositorySettings);
+            case GITHUB -> new RemoteRepositorySettingsSubComponent(gitHubSettings, RemoteRepositoryConfig.GITHUB);
+            case GITLAB -> new RemoteRepositorySettingsSubComponent(gitLabSettings, RemoteRepositoryConfig.GITLAB);
         };
 
         component.add(subComponent, constraints);

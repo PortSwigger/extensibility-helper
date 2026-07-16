@@ -6,22 +6,22 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
-public class GitHubClient implements HttpClient{
-    private static final String REPOSITORY_ZIPBALL_URL_TEMPLATE = "%s/repos/%s/zipball";
+public class GitLabClient implements HttpClient{
+    private static final String REPOSITORY_ZIPBALL_URL_TEMPLATE = "%s/api/v4/projects/%s/repository/archive.zip";
 
     private final RequestSender requestSender;
 
-    public GitHubClient(RequestSender requestSender) {
+    public GitLabClient(RequestSender requestSender) {
         this.requestSender = requestSender;
     }
 
     @Override
-    public byte[] downloadRepoAsZip(String repositoryUrl, String repositoryName, String apiKey) {
+    public byte[] downloadRepoAsZip(String repositoryUrl, String repositoryId, String apiKey) {
         String trimmedRepositoryUrl = repositoryUrl.trim().replaceAll("/$", "");
-        String url = REPOSITORY_ZIPBALL_URL_TEMPLATE.formatted(trimmedRepositoryUrl, repositoryName);
+        String url = REPOSITORY_ZIPBALL_URL_TEMPLATE.formatted(trimmedRepositoryUrl, repositoryId);
 
         Map<String, String> headers = apiKey != null && !apiKey.isBlank() ?
-                Map.of("Authorization", "Bearer " + apiKey) :
+                Map.of("PRIVATE-TOKEN", apiKey) :
                 emptyMap();
 
         return requestSender.sendRequest(url, headers).body().getBytes();
